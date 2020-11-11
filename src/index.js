@@ -1,44 +1,74 @@
 'use strict'
 
+const intervals = new Map()
+
+const _generateId = () => `${Date.now()}:${Math.floor(Math.random() * 1000000)}`
+
 /**
- * Factory that creates a setDelayedInterval
+ * Run a given task each {interval} ms
+ *
+ * @param {() => Promise} task
+ * @param {number} interval
+ * @param {string} id
  */
-function setDelayedInterval () {
-  let timeout
-
-  /**
-   * Run a given task each {interval} ms
-   */
-  async function _runPeriodically(task, interval) {
-    while (timeout) {
-      await task
-      await new Promise(resolve => {
-        timeout = setTimeout(resolve, interval)
-      })
+async function _runPeriodically (task, interval, id) {
+  while (intervals.get(id)) {
+    try {
+      await task()
+    } catch (err) {
+      // Throw global context error if handler throws
+      setTimeout(() => { throw err }, 1)
+      break
     }
-  }
 
-  /**
-  * Asynchronous setInterval that is properly delayed using promises and can be delayed on boot.
-  *
-  * @param {() => Promise} task
-  * @param {number} interval
-  * @param {number} [delay = interval]
-  * @returns {{ cancel: () => {}}}
-  */
-  return (task, interval, delay) => {
-    delay = delay || interval
-
-    timeout = setTimeout(() => {
-      _runPeriodically(task, interval)
-    }, delay)
-
-    return {
-      cancel: () => {
-        clearTimeout(timeout)
-      }
+    if (!intervals.get(id)) {
+      break
     }
+
+    await new Promise(resolve => {
+      const _timeout = setTimeout(resolve, interval)
+
+      intervals.set(id, _timeout)
+    })
   }
 }
 
-module.exports = setDelayedInterval
+/**
+ * Asynchronous setInterval that is properly delayed using promises and can be delayed on boot.
+ *
+ * @param {() => Promise} task
+ * @param {number} interval
+ * @param {number} [delay = interval]
+ * @returns {string}
+ */
+function setDelayedInterval (task, interval, delay) {
+  delay = delay || interval
+
+  const id = _generateId()
+  const _timeout = setTimeout(() => {
+    _runPeriodically(task, interval, id)
+  }, delay)
+
+  intervals.set(id, _timeout)
+
+  return id
+}
+
+/**
+ * Clear delayed interval.
+ *
+ * @param {string} id
+ */
+function clearDelayedInterval (id) {
+  const _timeout = intervals.get(id)
+
+  if (_timeout) {
+    clearTimeout(_timeout)
+    intervals.delete(id)
+  }
+}
+
+module.exports = {
+  setDelayedInterval,
+  clearDelayedInterval
+}

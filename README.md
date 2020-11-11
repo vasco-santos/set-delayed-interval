@@ -8,7 +8,9 @@
 
 ## Motivation
 
+The native implementation of `setInterval` expects synchronous functions to be executed. When asynchronous functions are provided, some unexpected behaviors might appear. This module mimics the `setInterval` native functionality with support for promises in a way that the interval timer is delayed by the execution of that promise. This results in equal stop times for each run, as soon as the promise is resolved.
 
+For some scenarios, it is important to add a boot delay before running a recurrent task. This module also supports a custom first delay before the interval start. The `clearDelayedInterval` can stop both the initial delay and the interval.
 
 ## Install
 
@@ -18,7 +20,26 @@ npm i set-delayed-interval
 
 ## Usage
 
-### Parameters
+```js
+const { setDelayedInterval, clearDelayedInterval } = require('set-delayed-interval')
+
+const task = async () => {
+  /// ....
+}
+
+// After 100ms, run the task recurrently with 50ms intervals
+const id = setDelayedInterval(task, 50, 100)
+
+// ...
+clearDelayedInterval(id)
+```
+
+
+## API
+
+### `setDelayedInterval`
+
+#### Parameters
 
 |  Name  | Type | Description |
 |--------|------|-------------|
@@ -26,19 +47,23 @@ npm i set-delayed-interval
 | interval | `number` | interval between each task (in ms) |
 | [delay] | `number` | delay before first run (in ms). Defaults to `interval`. |
 
-### Returns
+#### Returns
 
 | Type | Description |
 |------|-------------|
-| `{ cancel: () => {} }` | interval properties |
+| `string` | interval id |
 
-### Example
+### `clearDelayedInterval`
 
-```js
-const setDelayedInterval = require('set-delayed-interval')
+#### Parameters
 
-setDelayedInterval()(() => task, 10000, 1000)
-```
+|  Name  | Type | Description |
+|--------|------|-------------|
+|  id  | `string` | interval id to clear |
+
+## Error Handling
+
+This module throws task errors on the global context. For handling your tasks errors, it is recommended to wrap the task async code with a `try catch` block, or your can catch the global errors with `process.once('uncaughtException', (err) => {})` in Node.js or `window.onerror = (err) => {}` in the browser.
 
 ## Contribute
 

@@ -4,6 +4,7 @@
 const { expect } = require('aegir/utils/chai')
 const sinon = require('sinon')
 const delay = require('delay')
+const pWaitFor = require('p-wait-for')
 
 const { setDelayedInterval, clearDelayedInterval } = require('../src')
 
@@ -17,6 +18,7 @@ describe('set-delayed-interval', () => {
       await delay(50)
     })
 
+    const start = new Date().getTime()
     const id = setDelayedInterval(task, 50, 100)
 
     // Stopped => 100
@@ -26,9 +28,13 @@ describe('set-delayed-interval', () => {
     // Stopped => 50 = 300
     // Running => 50 = 350
 
-    await delay(350)
+    await pWaitFor(() => task.callCount === 3)
+
+    const end = new Date().getTime() - start
     clearDelayedInterval(id)
-    expect(task.callCount).to.eql(3)
+
+    expect(end >= 300).to.eql(true)
+    expect(end <= 350).to.eql(true)
 
     await delay(350)
     expect(task.callCount).to.eql(3)
@@ -39,6 +45,7 @@ describe('set-delayed-interval', () => {
       await delay(50)
     })
 
+    const start = new Date().getTime()
     const id = setDelayedInterval(task, 100)
 
     // Stopped => 100
@@ -46,9 +53,13 @@ describe('set-delayed-interval', () => {
     // Stopped => 100 = 250
     // Running => 50 = 300
 
-    await delay(300)
+    await pWaitFor(() => task.callCount === 2)
+
+    const end = new Date().getTime() - start
     clearDelayedInterval(id)
-    expect(task.callCount).to.eql(2)
+
+    expect(end >= 250).to.eql(true)
+    expect(end <= 300).to.eql(true)
 
     await delay(300)
     expect(task.callCount).to.eql(2)

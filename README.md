@@ -10,7 +10,7 @@
 
 The native implementation of `setInterval` expects synchronous functions to be executed. When asynchronous functions are provided, some unexpected behaviors might appear. This module mimics the `setInterval` native functionality with support for promises in a way that the interval timer is delayed by the execution of that promise. This results in equal stop times for each run, as soon as the promise is resolved.
 
-For some scenarios, it is important to add a boot delay before running a recurrent task. This module also supports a custom first delay before the interval start. The `clearDelayedInterval` can stop both the initial delay and the interval.
+For some scenarios, it is useful to add a start delay before running a recurrent task. This module also supports a custom delay before the interval starts. The `clearDelayedInterval` can stop both the initial delay and the interval.
 
 ## Install
 

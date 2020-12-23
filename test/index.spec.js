@@ -18,8 +18,8 @@ describe('set-delayed-interval', () => {
       await delay(50)
     })
 
-    const start = new Date().getTime()
     const id = setDelayedInterval(task, 50, 100)
+    const start = new Date().getTime()
 
     // Stopped => 100
     // Running => 50 = 150
@@ -34,7 +34,6 @@ describe('set-delayed-interval', () => {
     clearDelayedInterval(id)
 
     expect(end >= 300).to.eql(true)
-    expect(end <= 350).to.eql(true)
 
     await delay(350)
     expect(task.callCount).to.eql(3)
@@ -45,8 +44,8 @@ describe('set-delayed-interval', () => {
       await delay(50)
     })
 
-    const start = new Date().getTime()
     const id = setDelayedInterval(task, 100)
+    const start = new Date().getTime()
 
     // Stopped => 100
     // Running => 50 = 150
@@ -59,7 +58,6 @@ describe('set-delayed-interval', () => {
     clearDelayedInterval(id)
 
     expect(end >= 250).to.eql(true)
-    expect(end <= 300).to.eql(true)
 
     await delay(300)
     expect(task.callCount).to.eql(2)

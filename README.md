@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/vasco-santos/set-delayed-interval.svg?branch=main)](https://travis-ci.org/vasco-santos/set-delayed-interval)
 [![dependencies Status](https://david-dm.org/vasco-santos/set-delayed-interval/status.svg)](https://david-dm.org/vasco-santos/set-delayed-interval)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![Downloads](https://img.shields.io/npm/dm/set-delayed-interval.svg)](https://www.npmjs.com/package/set-delayed-interval)
 [![codecov](https://img.shields.io/codecov/c/github/vasco-santos/set-delayed-interval.svg?style=flat-square)](https://codecov.io/gh/vasco-santos/set-delayed-interval)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/vasco-santos/set-delayed-interval/ci?label=ci&style=flat-square)](https://github.com/vasco-santos/set-delayed-interval/actions?query=branch%3Amaster+workflow%3Aci+)
 
